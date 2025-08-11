@@ -8,6 +8,7 @@ class Pen :
         """
         self._canvas = canvas 
         self._cp = Point(0,0) # current position
+        self._angle = 0 
 
     # === move_to function ===
     def move_to(self , x: float , y:float) -> None :
@@ -20,7 +21,7 @@ class Pen :
         self._canvas.add_line(self._cp , new_point)
         self._cp = new_point
 
-        
+
     def draw_circle(self , circle: Circle) -> None :
         """Draw a circle by connecting its points on its circumference
         Args:
@@ -38,3 +39,10 @@ class Pen :
     def get_position(self) -> Point:
         """Get teh current position of the pen"""
         return self._cp 
+    
+    def turn_right(self , degrees: float) -> None :
+        self._angle = (self._angle - degrees) % 360 
+    def turn_left(self , degrees: float) -> None:
+        self._angle = (self._angle + degrees) % 360 
+    def get_angle(self) -> float :
+        return self._angle 
