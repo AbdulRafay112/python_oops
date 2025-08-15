@@ -1,53 +1,59 @@
 from __future__ import annotations
+from copy import deepcopy
 from math import gcd 
 class RationalNumber:
     """Simple Rational Numbers Class that handle all operations related to Rational Numbers"""
-    def __init__(self , numerator: int , denominator: int):
+    def __init__(self , numerator: int = 0 , denominator: int = 1): # default constructor logic handling 
         """Constructor of Rational Numbers Class , inititalze class with arguments numerator and denominator
         Args:
             numerator: Fraction upper Element , type -> float
             denominator: Fraction downward element , type -> float 
         """
-        if denominator == 0 :
-            raise ValueError("Denominator Can not be Zero")
-        if not isinstance(numerator , int) or not isinstance(denominator , int):
-            raise TypeError("Numerator and denominator should be integer type")
-        self._numerator = numerator
-        self._denominator = denominator 
-        self.simplify()
+        if isinstance(numerator , RationalNumber):
+            """Copy constructor case handling"""
+            self._numerator , self._denominator = numerator._numerator , numerator._denominator
+        else:
+            if isinstance(numerator , tuple):
+                if len(numerator) != 2 :
+                    raise ValueError("Fraction must include two parts e.g -> numerator , denominator")
+                numerator , denominator = numerator
+            self._validate_denominator(denominator)
+            numerator , denominator = self._normalize_sign(numerator , denominator)
+            numerator , denominator = self._simplify(numerator , denominator)
+            self._numerator = numerator
+            self._denominator = denominator 
+    @classmethod
+    def from_string(cls , fraction_str: str) :
+        parts = fraction_str.split("/")
+        if len(parts) != 2 :
+            raise ValueError("fraction must include two parts")
+        num , den = int(parts[0]) , int(parts[1])
+        return cls(num , den) 
 
 
-    # === getter and setter methods ===
+    # === getter methods we donot need setter function because denominator and numerator are immutable ===
     @property 
     def numerator(self) -> int :
         """Get the numerator"""
         return self._numerator
-    @numerator.setter 
-    def numerator(self , value: int) -> None :
-        """Set Numerator by a new value"""
-        if isinstance(value , int):
-            self._numerator = value 
-        else:
-            raise TypeError("Numerator should be integer type")
     @property 
     def denominator(self) -> int :
         """get the value of denominator"""
         return self._denominator 
-    @denominator.setter
-    def denominator(self , value: int) -> None:
-        """Set the value of denominator by a new value"""
-        if not isinstance(value , int):
-            raise TypeError("denominator should be integer type")
-        elif value == 0 :
-            raise ValueError("denominator can not be zero")
-        self._denominator = value 
 
     # === operator overloading === 
-    def __add__(self , other: RationalNumber) -> RationalNumber:
+    def __add__(self , other) -> RationalNumber:
         """Add two Rational Numbers and return new rational number of two rational numbers addition result"""
-        new_numerator = self._numerator * other._denominator + other._numerator * self._denominator
-        new_denominator = self._denominator * other._denominator
-        return RationalNumber(new_numerator , new_denominator)
+        """First of all we check other object is mutable or not if other object is mutable then we make deep copy of that object else we 
+        donot make any copy"""
+        # covert int in to RationalNumber 
+        if isinstance(other , int):
+            other_copy = RationalNumber(other , 1)
+        elif not isinstance(other , RationalNumber):
+            return NotImplemented
+        num = self._numerator * other_copy._denominator + self._denominator * other_copy._numerator
+        den = self._denominator * other_copy._denominator 
+        return RationalNumber(num , den)
     def __sub__(self , other: RationalNumber) -> RationalNumber:
         """Subtract two rational numbers"""
         new_numerator = self._numerator * other._denominator - other._numerator * self._denominator
@@ -62,17 +68,25 @@ class RationalNumber:
             raise ValueError("Can not divide by zero")
         return RationalNumber(self._numerator * other._denominator , self._denominator * other._numerator)
      
-    def simplify(self) -> None:
-        """simplifies the fraction to its lowest form"""
-        common_divisor = gcd(self._numerator , self._denominator)
-        self._numerator //= common_divisor 
-        self._denominator //= common_divisor 
-        if self._denominator < 0:
-            self._numerator *= -1
-            self._denominator *= -1
+    def _validate_denominator(self , denominator: int) -> None:
+        """Validate the denominator if denominator is 0 raise value error"""
+        if denominator == 0 :
+            raise ZeroDivisionError("denominator can not be zero")
+    def _normalize_sign(self , numerator: int , denominator: int) -> tuple:
+        return (-numerator , -denominator) if denominator < 0 else (numerator , denominator)
+    def _simplify(self , numerator: int , denominator: int) -> tuple :
+        """Simplify the fraction term in to its lowest form like 8 / 6 lowest form is 4 / 3"""
+        if numerator == 0 :
+            return 0 , denominator
+        hcf = gcd(numerator , denominator)
+        return numerator // hcf , denominator // hcf 
 
-    
-    # === string representation ===
+     # === string representation ===
     def __str__(self) -> str:
         return f"{self._numerator} / {self._denominator}" 
-        
+
+
+
+
+
+
