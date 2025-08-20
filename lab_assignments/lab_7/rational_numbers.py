@@ -44,16 +44,10 @@ class RationalNumber:
     # === operator overloading === 
     def __add__(self , other) -> RationalNumber:
         """Add two Rational Numbers and return new rational number of two rational numbers addition result"""
-        """First of all we check other object is mutable or not if other object is mutable then we make deep copy of that object else we 
-        donot make any copy"""
-        # covert int in to RationalNumber 
-        if isinstance(other , int):
-            other_copy = RationalNumber(other , 1)
-        elif not isinstance(other , RationalNumber):
-            return NotImplemented
-        num = self._numerator * other_copy._denominator + self._denominator * other_copy._numerator
-        den = self._denominator * other_copy._denominator 
+        num = self._numerator * other._denominator + self._denominator * other._numerator
+        den = self._denominator * other._denominator 
         return RationalNumber(num , den)
+    
     def __sub__(self , other: RationalNumber) -> RationalNumber:
         """Subtract two rational numbers"""
         new_numerator = self._numerator * other._denominator - other._numerator * self._denominator
@@ -87,6 +81,7 @@ class RationalNumber:
 
 
 
-
-
-
+r1 = RationalNumber(1,2)
+r2 = RationalNumber(3,4)
+r3 = r1 + r2
+print(r3)

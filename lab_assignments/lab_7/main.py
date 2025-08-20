@@ -3,8 +3,9 @@ from vector import Vector
 
 if __name__ == "__main__":
     # Rational Number Example
-    r1: RationalNumber = RationalNumber(1, 2)
-    r2: RationalNumber = RationalNumber(3, 4)
+    r1 = RationalNumber(1, 2)
+    r2 = RationalNumber(3, 4)
+    r3 = r1 + r2
     print("Rational Add:", r1 + r2)
     print("Rational Subtract:", r1 - r2)
     print("Rational Multiply:", r1*r2)
