@@ -1,0 +1,1 @@
+class that counts word frequency in a string with out any duplicates 
