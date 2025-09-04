@@ -17,6 +17,17 @@ class Range:
         self._stop = stop 
         self._step = step 
 
+    # === properties ===
+    @property 
+    def start(self) -> int:
+        return self._start 
+    @property
+    def stop(self) -> int :
+        return self._stop 
+    @property 
+    def step(self) -> int :
+        return self._step 
+    
     # === dunder methods ===
     def __len__(self) -> int:
         """Return number of entries in the range"""
@@ -24,17 +35,17 @@ class Range:
     def __getitem__(self , k: int) -> int :
         k = self._negative_index_handling(k) # index negative case handling 
         self._index_validation(k)
-        return self._start + k * self._step
+        return self.start + k * self.step
     
     def __iter__(self):
         for i in range(len(self)):
             yield self[i]
     def __repr__(self) -> str :
         """Developer representation"""
-        return f"Range({self._start} , {self._stop} , {self._step})"
+        return f"Range({self.start} , {self.stop} , {self.step})"
     def __str__(self) -> str :
         """client representation"""
-        return f"start = {self._start} , stop = {self._stop} , step = {self._step}"
+        return f"start = {self.start} , stop = {self.stop} , step = {self.step}"
     def __eq__(self , other) -> None :
         """Compare with other Range or built in range"""
         if isinstance(other , Range) or isinstance(other , range):
